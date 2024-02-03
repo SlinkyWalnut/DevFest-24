@@ -5,6 +5,9 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
+from dotenv import load_dotenv
+
+load_dotenv()
 
 memory = ConversationBufferMemory(
     memory_key="chat_history", return_messages=True, output_key="answer"
