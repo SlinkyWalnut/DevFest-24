@@ -6,6 +6,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
 from dotenv import load_dotenv
+from mainIdea import get_main_idea
 
 load_dotenv()
 
@@ -59,6 +60,15 @@ if user_input:
     #call scraper and put scraped data into text file in Data
     # blob it using AiSearch
     #call next command
+
+    #get main idea from user's question
+    mainIdea = get_main_idea(user_input)
+
+    #send main idea into scraper
+    #saved scraped data into txt files in Data
+    #blob stuff in Data
+    #run response
+    
     output = chain.run(question=user_input) #where info is sent
     st.session_state.past.append(user_input)
     st.session_state.generated.append(output)
