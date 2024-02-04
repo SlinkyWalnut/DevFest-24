@@ -15,7 +15,7 @@ memory = ConversationBufferMemory(
 
 
 def load_chain():
-    prompt_template = """You are a helpful assistant for questions about Midsummer night dream.
+    prompt_template = """You are a helpful assistant for questions about Donald Trump.
 
     {context}
 
@@ -38,8 +38,8 @@ def load_chain():
 
 chain = load_chain()
 
-st.set_page_config(page_title="LangChain Demo", page_icon=":robot:")
-st.header("LangChain Demo")
+st.set_page_config(page_title="Trust me, bro", page_icon=":robot:")
+st.header("Trust me, bro")
 
 if "generated" not in st.session_state:
     st.session_state["generated"] = []
@@ -56,7 +56,10 @@ def get_text():
 user_input = get_text()
 
 if user_input:
-    output = chain.run(question=user_input)
+    #call scraper and put scraped data into text file in Data
+    # blob it using AiSearch
+    #call next command
+    output = chain.run(question=user_input) #where info is sent
     st.session_state.past.append(user_input)
     st.session_state.generated.append(output)
 
