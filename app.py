@@ -5,6 +5,9 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
+import plotly.express as px
+from streamlit_extras.stylable_container import stylable_container
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -35,11 +38,23 @@ def load_chain():
     )
     return chain
 
-
 chain = load_chain()
 
 st.set_page_config(page_title="Trust me, bro", page_icon=":robot:")
 st.header("Trust me, bro")
+c2 = st.columns(2)
+
+# Displaying an image within a stylable container
+with c2[0]:
+    with stylable_container(
+        key="logo_image",
+        css_styles="""
+        img {
+            border-radius: 2em;
+        }
+        """,
+    ):
+        st.image("./logo.png")
 
 if "generated" not in st.session_state:
     st.session_state["generated"] = []
@@ -47,19 +62,17 @@ if "generated" not in st.session_state:
 if "past" not in st.session_state:
     st.session_state["past"] = []
 
-
 def get_text():
     input_text = st.text_input("You: ", "", key="input")
     return input_text
 
-
 user_input = get_text()
 
 if user_input:
-    #call scraper and put scraped data into text file in Data
+    # call scraper and put scraped data into text file in Data
     # blob it using AiSearch
-    #call next command
-    output = chain.run(question=user_input) #where info is sent
+    # call next command
+    output = chain.run(question=user_input)  # where info is sent
     st.session_state.past.append(user_input)
     st.session_state.generated.append(output)
 
