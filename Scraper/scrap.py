@@ -8,15 +8,17 @@ from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
+from selenium.webdriver.chrome.service import Service
 from selenium.common.exceptions import InvalidArgumentException, ElementNotInteractableException, StaleElementReferenceException, NoSuchElementException, WebDriverException, InvalidElementStateException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-RELIABLE_SITES = ["apnews.com","nbcnews.com"]
+RELIABLE_SITES = ["apnews.com"] #["apnews.com","nbcnews.com"]
 
 class Bot():
     def __init__(self, x, y, h, issue):
+        self.text = ""
         x = str(x)
         y = str(y)
         user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
@@ -39,7 +41,8 @@ class Bot():
         self.options.add_experimental_option("prefs", {
             "profile.default_content_setting_values.notifications": 1
         })
-        self.driver = webdriver.Chrome("chromedriver-linux64/chromedriver", options=self.options)
+        service = Service(executable_path=r'chromedriver-linux64/chromedriver')
+        self.driver = webdriver.Chrome(service=service, options=self.options)
 
         self.issue = issue
 
@@ -68,6 +71,8 @@ class Bot():
             
         elements = main.find_elements(By.TAG_NAME, "a")
         links = {}
+        m = 10
+        i = 0
         for l in elements:
             try:
                 if l.text:
@@ -75,9 +80,14 @@ class Bot():
                     pattern = r"https?://(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z]+)"
                     match = re.match(pattern, url)
                     if match and match.group(1) == self.site:
-                        links[url] = l.text
+                        if url not in links.keys():
+                            i+=1
+                            links[url] = l.text
+                        
             except StaleElementReferenceException:
                 pass
+            if i == m:
+                break
         return links
     def get_search(self):
         search = self.driver.find_element(By.NAME, "q")
@@ -106,7 +116,20 @@ class Bot():
         # Wait for the next page to load
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.staleness_of(search))
-        return self.list_links()
+        self.links = self.list_links()
+        return self.links
+    
+    def get_article(self, link):
+        self.driver.get(link)
+        text_elem = None
+
+        if self.site == "apnews.com":
+            try:
+                text_elem = self.driver.find_elements(By.CLASS_NAME, "RichTextStoryBody")[0]
+                self.text += self.driver.title + "\n\n" + text_elem.text + "\n\n"
+
+            except IndexError:
+                pass
     
     #
     # Get political position
@@ -122,8 +145,11 @@ def run(bot):
     for site in RELIABLE_SITES:
         bot.goto(site)
         links = dict( links, ** bot.search_issue() )
-    with open("articles.json","w") as json_file:
-        json.dump(links, json_file, indent=4)
+
+    list_links_keys = list(links.keys())
+    for x in range(len(list_links_keys)):
+        bot.get_article(list_links_keys[x])
+
     time.sleep(5)
     bot.stop()
     print("Bot stopped.")
@@ -137,8 +163,13 @@ def start_thread(issue):
 
     return bot
 
+def scrape(main_idea):
+    bot = start_thread(main_idea)
+    time.sleep(10) #make this longer if you need more time to get articles
+    return bot.text
+
 if __name__ == "__main__":
-    issue = "manatees"
+    issue = "immigration"
     bot = start_thread(issue)
 
     end = 'not_empty'
