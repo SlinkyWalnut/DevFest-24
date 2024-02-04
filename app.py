@@ -69,8 +69,9 @@ if "past" not in st.session_state:
 
 def get_text():
     input_text = st.text_input("You: ", "", key="input")
-    # mainIdea = get_main_idea(input_text)
-    data = scrape("immigration donald trump")
+    mainIdea = get_main_idea(input_text)
+    print(mainIdea)
+    data = scrape(mainIdea)
     with open('Data/data.txt', 'w') as f:
         f.write(data)
     subprocess.run(['python', 'AiSearch.py'])
@@ -80,8 +81,6 @@ def get_text():
 user_input = get_text()
 
 if user_input:
-    # print("getting main idea of user_input...")
-
     output = chain.run(question=user_input) #where info is sent
     st.session_state.past.append(user_input)
     st.session_state.generated.append(output)
