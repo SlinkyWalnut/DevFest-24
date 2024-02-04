@@ -42,6 +42,10 @@ def load_chain():
 
 
 chain = load_chain()
+
+st.set_page_config(page_title="Trust me, bro", page_icon=":robot:")
+st.header("Trust me, bro")
+
 c2 = st.columns(2)
 
 # Displaying an image within a stylable container
@@ -56,9 +60,6 @@ with c2[0]:
     ):
         st.image("./logo.png")
 
-st.set_page_config(page_title="Trust me, bro", page_icon=":robot:")
-st.header("Trust me, bro")
-
 if "generated" not in st.session_state:
     st.session_state["generated"] = []
 
@@ -68,8 +69,8 @@ if "past" not in st.session_state:
 
 def get_text():
     input_text = st.text_input("You: ", "", key="input")
-    mainIdea = get_main_idea(input_text)
-    data = scrape(mainIdea)
+    # mainIdea = get_main_idea(input_text)
+    data = scrape("immigration donald trump")
     with open('Data/data.txt', 'w') as f:
         f.write(data)
     subprocess.run(['python', 'AiSearch.py'])

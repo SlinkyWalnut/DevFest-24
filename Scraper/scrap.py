@@ -41,8 +41,8 @@ class Bot():
         self.options.add_experimental_option("prefs", {
             "profile.default_content_setting_values.notifications": 1
         })
-        service = Service(executable_path=r'chromedriver-linux64/chromedriver')
-        self.driver = webdriver.Chrome(service=service, options=self.options)
+        #service = Service(executable_path=r'chromedriver')
+        self.driver = webdriver.Chrome(options=self.options)
 
         self.issue = issue
 
