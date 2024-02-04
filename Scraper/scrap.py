@@ -107,6 +107,14 @@ class Bot():
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.staleness_of(search))
         return self.list_links()
+    
+    #
+    # Get political position
+    #
+    def get_position(self, person):
+        self.goto("isidewith.com")
+        #go to person/policies
+        #get policies
 
 
 def run(bot):
