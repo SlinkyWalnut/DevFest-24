@@ -19,6 +19,6 @@ for root, dirs, files in os.walk(directory_path):
         )
 
         with open(file_path, "rb") as data:
-            blob_client.upload_blob(data)
+            blob_client.upload_blob(data, overwrite=True)
 
-        print(f"Datei {file_path} erfolgreich zu {blob_name} hochgeladen!")
+        print(f"Hurrah {file_path} the thing {blob_name} is in the blob!")

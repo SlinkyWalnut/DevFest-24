@@ -26,5 +26,6 @@ def get_main_idea(question):
     
     # Join the tokens to form the main idea
     main_idea = ' '.join(main_idea_tokens)
+    print(main_idea)
     
     return main_idea

@@ -4,7 +4,6 @@ from langchain.vectorstores.azuresearch import AzureSearch
 from langchain_community.document_loaders import AzureBlobStorageContainerLoader
 from langchain.text_splitter import CharacterTextSplitter
 from dotenv import load_dotenv
-
 load_dotenv()
 
 model: str = "text-embedding-ada-002"
@@ -29,7 +28,7 @@ loader = AzureBlobStorageContainerLoader(
 )
 documents = loader.load()
 
-text_splitter = CharacterTextSplitter(chunk_size=150, chunk_overlap=20)
+text_splitter = CharacterTextSplitter(chunk_size=2000, chunk_overlap=100)
 docs = text_splitter.split_documents(documents)
 vector_store.add_documents(documents=docs)
 

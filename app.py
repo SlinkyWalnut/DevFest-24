@@ -11,6 +11,7 @@ import plotly.express as px
 from streamlit_extras.stylable_container import stylable_container
 from Scraper.scrap import scrape
 import subprocess
+import time
 
 load_dotenv()
 
@@ -31,7 +32,7 @@ def load_chain():
     )
 
     retriever = AzureCognitiveSearchRetriever(content_key="content", top_k=10)
-
+    #print(retriever)
     chain = ConversationalRetrievalChain.from_llm(
         llm=ChatOpenAI(),
         memory=memory,
@@ -70,10 +71,12 @@ if "past" not in st.session_state:
 def get_text():
     input_text = st.text_input("You: ", "", key="input")
     mainIdea = get_main_idea(input_text)
-    print(mainIdea)
+    print("getting main idea")
     data = scrape(mainIdea)
+
     with open('Data/data.txt', 'w') as f:
         f.write(data)
+    subprocess.run(['python', 'blob.py'])
     subprocess.run(['python', 'AiSearch.py'])
     return input_text
 

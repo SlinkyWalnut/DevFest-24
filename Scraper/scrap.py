@@ -148,6 +148,7 @@ def run(bot):
 
     list_links_keys = list(links.keys())
     for x in range(len(list_links_keys)):
+    #for x in range(3):
         bot.get_article(list_links_keys[x])
 
     time.sleep(5)
